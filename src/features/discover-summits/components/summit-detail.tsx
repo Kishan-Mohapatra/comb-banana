@@ -1,11 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons';
 import type { Summit, SummitCategory } from '@/constants/summit-data';
+
+const Booth3DView = dynamic(() => import('./booth-3d-view').then((m) => m.Booth3DView), {
+  ssr: false,
+  loading: () => <div className='bg-muted/30 h-[420px] w-full rounded-xl border' />
+});
 
 const categoryGradient: Record<SummitCategory, string> = {
   InsurTech: 'linear-gradient(135deg, var(--chart-1), var(--chart-5))',
@@ -39,78 +46,95 @@ export function SummitDetail({ summit }: { summit: Summit }) {
 
       <p className='text-muted-foreground text-sm'>{summit.description}</p>
 
-      {/* Metadata */}
-      <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5'>
-        <Card size='sm'>
-          <CardHeader>
-            <CardDescription>Geography</CardDescription>
-            <CardTitle className='text-base font-semibold'>{summit.region}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card size='sm'>
-          <CardHeader>
-            <CardDescription>Where</CardDescription>
-            <CardTitle className='text-base font-semibold'>{summit.location}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card size='sm'>
-          <CardHeader>
-            <CardDescription>When</CardDescription>
-            <CardTitle className='text-base font-semibold'>{summit.dates}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card size='sm'>
-          <CardHeader>
-            <CardDescription>Size</CardDescription>
-            <CardTitle className='text-base font-semibold'>{summit.sizeLabel}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card size='sm'>
-          <CardHeader>
-            <CardDescription>Budget range</CardDescription>
-            <CardTitle className='text-base font-semibold tabular-nums'>
-              ${summit.boothTiersFrom.toLocaleString()}–${summit.boothTiersTo.toLocaleString()}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
+      <Tabs defaultValue='details'>
+        <TabsList className='mx-auto h-[60px] p-2'>
+          <TabsTrigger value='details' className='px-6 text-sm'>
+            Details
+          </TabsTrigger>
+          <TabsTrigger value='3d' className='px-6 text-sm'>
+            3D View
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Criteria — member vs audience */}
-      <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
-        <Card>
-          <CardHeader>
-            <CardTitle>Criteria — as a member</CardTitle>
-            <CardDescription>What to have ready to exhibit or sponsor</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className='space-y-2'>
-              {summit.participationCriteria.map((c) => (
-                <li key={c} className='flex items-start gap-2 text-sm'>
-                  <Icons.circleCheck className='mt-0.5 size-4 shrink-0 text-emerald-500' />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <TabsContent value='details' className='flex flex-col gap-4 pt-4'>
+          {/* Metadata */}
+          <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5'>
+            <Card size='sm'>
+              <CardHeader>
+                <CardDescription>Geography</CardDescription>
+                <CardTitle className='text-base font-semibold'>{summit.region}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card size='sm'>
+              <CardHeader>
+                <CardDescription>Where</CardDescription>
+                <CardTitle className='text-base font-semibold'>{summit.location}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card size='sm'>
+              <CardHeader>
+                <CardDescription>When</CardDescription>
+                <CardTitle className='text-base font-semibold'>{summit.dates}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card size='sm'>
+              <CardHeader>
+                <CardDescription>Size</CardDescription>
+                <CardTitle className='text-base font-semibold'>{summit.sizeLabel}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card size='sm'>
+              <CardHeader>
+                <CardDescription>Budget range</CardDescription>
+                <CardTitle className='text-base font-semibold tabular-nums'>
+                  ${summit.boothTiersFrom.toLocaleString()}–${summit.boothTiersTo.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Criteria — as an audience</CardTitle>
-            <CardDescription>What you need just to attend</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className='space-y-2'>
-              {summit.audienceCriteria.map((c) => (
-                <li key={c} className='flex items-start gap-2 text-sm'>
-                  <Icons.circleCheck className='mt-0.5 size-4 shrink-0 text-emerald-500' />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+          {/* Criteria — member vs audience */}
+          <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+            <Card>
+              <CardHeader>
+                <CardTitle>Criteria — as a member</CardTitle>
+                <CardDescription>What to have ready to exhibit or sponsor</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className='space-y-2'>
+                  {summit.participationCriteria.map((c) => (
+                    <li key={c} className='flex items-start gap-2 text-sm'>
+                      <Icons.circleCheck className='mt-0.5 size-4 shrink-0 text-emerald-500' />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Criteria — as an audience</CardTitle>
+                <CardDescription>What you need just to attend</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className='space-y-2'>
+                  {summit.audienceCriteria.map((c) => (
+                    <li key={c} className='flex items-start gap-2 text-sm'>
+                      <Icons.circleCheck className='mt-0.5 size-4 shrink-0 text-emerald-500' />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value='3d' className='pt-4'>
+          <Booth3DView />
+        </TabsContent>
+      </Tabs>
 
       <div className='flex gap-2'>
         <Button variant='outline' onClick={() => router.push('/dashboard/discover')}>
