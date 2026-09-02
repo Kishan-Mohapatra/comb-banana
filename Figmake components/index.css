@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text: #f0ede8;
+  --text-muted: #888680;
+  --text-dim: #555250;
+  --accent: #f59e0b;
+  --accent-dim: rgba(245, 158, 11, 0.15);
+  --red: #ef4444;
+  --orange: #f97316;
+  --yellow: #eab308;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --sidebar-w: 220px;
+  --sidebar-w-collapsed: 56px;
+  --right-w: 420px;
+}
+
+.light {
+  --bg: #f4f2ef;
+  --surface: #ffffff;
+  --surface-2: #f0ede8;
+  --border: rgba(0, 0, 0, 0.07);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --text: #1a1814;
+  --text-muted: #7a7570;
+  --text-dim: #bbb8b2;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+.sidebar-transition { transition: width 0.22s cubic-bezier(0.4,0,0.2,1); }
+.panel-transition { transition: width 0.22s cubic-bezier(0.4,0,0.2,1), opacity 0.18s ease; }
+.fade-in { animation: fadeIn 0.18s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* responsive: collapse right panel and shrink sidebar on narrow viewports */
+@media (max-width: 900px) {
+  :root {
+    --right-w: 0px;
+    --sidebar-w: var(--sidebar-w-collapsed);
+  }
+}
+
+@media (max-width: 480px) {
+  :root { --sidebar-w-collapsed: 0px; }
+}
